@@ -206,7 +206,7 @@ const DesktopNav = () => {
             <PopoverTrigger>
               <Link
                 p={2}
-                href={navItem.href ?? "#"}
+                href={navItem.href ?? "/"}
                 color={linkColor}
                 _hover={{
                   textDecoration: "none",
