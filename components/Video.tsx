@@ -7,6 +7,8 @@ export default function Video(props: any) {
   const parseUrlArr = props?.videoIpfsUrl?.split("ipfs://");
   const ipfsUrl = parseUrlArr?.[1];
   console.log("ipfsUrl:", ipfsUrl);
+  const cid = props?.videoIpfsUrl?.split("/")[2];
+  console.log("cid:", cid);
 
   return (
     <Center py="20" paddingTop={"none"}>
@@ -129,7 +131,7 @@ export default function Video(props: any) {
               )}
             </>
           </Box>
-          <Link href="/VideoDetail">
+          <Link href={`/videos/${cid}`}>
             <Box paddingX={"8"}>
               <Text
                 color={"white"}

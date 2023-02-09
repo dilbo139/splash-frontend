@@ -26,8 +26,11 @@ const MyProfileNFTs: React.FC = () => {
     queryFn: fetchPosts,
   });
 
-  const { message: postData } = data || {};
+  // console.log("posts:", posts);
+  // console.log("postData:", postData?.message);
+  const postData = data?.message;
   console.log("postData:", postData);
+
   return (
     <Grid
       templateColumns={{ base: "repeat(1,1fr)", md: "repeat(3,1fr)" }}
