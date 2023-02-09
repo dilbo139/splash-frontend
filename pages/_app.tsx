@@ -3,10 +3,12 @@ import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import Layout from "@components/Layout";
 import { extendTheme, ThemeConfig } from "@chakra-ui/react";
+import { ThirdwebProvider, ChainId } from "@thirdweb-dev/react";
 
 import "@fontsource/figtree/400.css";
 import "@fontsource/figtree/500.css";
 import "@fontsource/figtree/700.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const chakraTheme: ThemeConfig = extendTheme({
   styles: {
@@ -34,13 +36,20 @@ const chakraTheme: ThemeConfig = extendTheme({
   },
 });
 
+const desiredChainId = ChainId.Mumbai;
+const queryClient = new QueryClient();
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider resetCSS theme={chakraTheme}>
-      <Layout title="Splash - Invest by Watching">
-        <Component {...pageProps} />
-      </Layout>
-    </ChakraProvider>
+    <ThirdwebProvider desiredChainId={desiredChainId}>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider resetCSS theme={chakraTheme}>
+          <Layout title="Splash - Invest by Watching">
+            <Component {...pageProps} />
+          </Layout>
+        </ChakraProvider>
+      </QueryClientProvider>
+    </ThirdwebProvider>
   );
 }
 

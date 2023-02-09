@@ -23,9 +23,27 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from "@chakra-ui/icons";
+import {
+  useAddress,
+  useNetworkMismatch,
+  useNetwork,
+  ConnectWallet,
+  ChainId,
+  MediaRenderer,
+  useDisconnect,
+} from "@thirdweb-dev/react";
+import React from "react";
+import useLensUser from "../lib/auth/useLensUser";
+import useLogin from "../lib/auth/useLogin";
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
+  const address = useAddress(); // Detect the connected address
+  const isOnWrongNetwork = useNetworkMismatch(); // Detect if the user is on the wrong network
+  const [, switchNetwork] = useNetwork(); // Function to switch the network.
+  const { isSignedInQuery, profileQuery } = useLensUser();
+  const { mutate: requestLogin } = useLogin();
+  const disconnect = useDisconnect();
 
   return (
     <Box>
@@ -82,20 +100,60 @@ export default function Navbar() {
           justify={"flex-end"}
           direction={"row"}
           spacing={6}
+          align={"center"}
         >
-          <Button
+          {/* <Button
             display={{ base: "end", md: "inline-flex" }}
             fontSize={"sm"}
             fontWeight={600}
             color={"white"}
             bg={"brand.purple"}
-            href={"#"}
             _hover={{
               bg: "pink.300",
             }}
           >
             Connect Wallet
-          </Button>
+          </Button> */}
+          {address && (
+            <Button
+              bgColor="brand.purple"
+              textColor="white"
+              onClick={disconnect}
+              _hover={{
+                opacity: 0.8,
+              }}
+            >
+              Disconnect Wallet
+            </Button>
+          )}
+
+          {!address ? (
+            <ConnectWallet accentColor="#7554FA" />
+          ) : isSignedInQuery.isLoading ? (
+            <div>Loading...</div>
+          ) : !isSignedInQuery.data ? (
+            <Button
+              onClick={() => requestLogin()}
+              display={{ base: "end", md: "inline-flex" }}
+              fontSize={"sm"}
+              fontWeight={600}
+              color={"white"}
+              bg={"brand.purple"}
+              _hover={{
+                bg: "pink.300",
+              }}
+            >
+              Sign in with Lens
+            </Button>
+          ) : profileQuery.isLoading ? (
+            <div>Loading...</div>
+          ) : !profileQuery.data?.defaultProfile ? (
+            <div>No Lens Profile.</div>
+          ) : profileQuery.data?.defaultProfile ? (
+            <Text>{profileQuery.data.defaultProfile.handle}</Text>
+          ) : (
+            <div>Something went wrong.</div>
+          )}
         </Stack>
       </Flex>
 
