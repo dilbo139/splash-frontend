@@ -162,7 +162,6 @@ const UploadForm: React.FC = () => {
                 p={6}
                 cursor={"pointer"}
               />
-
               <Text fontWeight={"500"} fontSize={"xl"}>
                 Drag & Drop
               </Text>

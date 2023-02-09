@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 export default function Video(props: any) {
   const router = useRouter();
   const isMyprofileNFTpage = router.pathname === "/MyProfile";
+  const parseUrlArr = props?.videoIpfsUrl?.split("ipfs://");
+  const ipfsUrl = parseUrlArr?.[1];
+  console.log("ipfsUrl:", ipfsUrl);
 
   return (
     <Center py="20" paddingTop={"none"}>
@@ -15,93 +18,118 @@ export default function Video(props: any) {
         width={{ base: "400px", md: "420px" }}
         height={{ base: "370px", md: "400px" }}
       >
-        <Link href="/VideoDetail">
-          <Box flexDirection={"column"}>
-            <Box
-              justifyContent={"center"}
-              display={"flex"}
-              position={"relative"}
-            >
+        <Box flexDirection={"column"}>
+          <Box justifyContent={"center"} display={"flex"} position={"relative"}>
+            {props.videoIpfsUrl ? (
+              <Box mx={"autpo"} py={3}>
+                {/* <VideoPlayer /> */}
+                <video
+                  controls
+                  className="video rounded-lg w-full h-[120%] max-w-[500px]"
+                  id="video"
+                  preload="metadata"
+                  // poster="https://airnfts.s3.amazonaws.com/nft-images/Doge_Father_1619037447162.jpg"
+                  style={{
+                    objectFit: "contain",
+                    borderRadius: "13px",
+                    width: "370px",
+                    height: "100%",
+                    margin: "0 auto",
+                    marginTop: "18px",
+                  }}
+                >
+                  {/* <source src="video.mp4" type="video/mp4"></source> */}
+                  <source
+                    // src="https://lens.infura-ipfs.io/ipfs/QmXDzrC6BwVwTXoC6CmosEMC4DHSJstfYsAfbcjh4CdeCa/nowft-intro.mp4"
+                    src={`https://lens.infura-ipfs.io/ipfs/${ipfsUrl}`}
+                    type="video/mp4"
+                  ></source>
+                </video>
+              </Box>
+            ) : (
               <Image
                 src={props.videoImage}
                 borderRadius={"13px"}
                 width={"90%"}
                 marginTop={"18px"}
               />
-              {isMyprofileNFTpage ? (
-                <Box
-                  position={"absolute"}
-                  top={"28px"}
-                  right={"35px"}
-                  width={"80px"}
-                  textAlign={"center"}
-                  fontWeight={"500"}
-                  paddingY={"1"}
-                  borderRadius={"13px"}
-                  bgColor={"brand.purple"}
+            )}
+
+            {isMyprofileNFTpage ? (
+              <Box
+                position={"absolute"}
+                top={"28px"}
+                right={"35px"}
+                width={"80px"}
+                textAlign={"center"}
+                fontWeight={"500"}
+                paddingY={"1"}
+                borderRadius={"13px"}
+                bgColor={"brand.purple"}
+              >
+                NFT #{props.NFTs}
+              </Box>
+            ) : (
+              <Box
+                position={"absolute"}
+                top={"28px"}
+                right={"35px"}
+                width={"130px"}
+                borderRadius={"13px"}
+                bgColor={"#222836"}
+                fontSize={"small"}
+                color={"white"}
+                padding={"5px"}
+              >
+                <Text textAlign={"center"}>Expected Earnings</Text>
+                <Text
+                  flexDirection={"row"}
+                  display={"flex"}
+                  gap={"8px"}
+                  paddingLeft={"5px"}
+                  paddingTop={"2px"}
+                  fontWeight={"600"}
                 >
-                  NFT #{props.NFTs}
-                </Box>
+                  <Image src="/images/splash-token.svg" width={"5"} />{" "}
+                  {props.videoEarn}
+                </Text>
+              </Box>
+            )}
+            <>
+              {isMyprofileNFTpage ? (
+                ""
               ) : (
                 <Box
+                  display={"flex"}
+                  flexDirection={"row"}
                   position={"absolute"}
-                  top={"28px"}
-                  right={"35px"}
-                  width={"130px"}
-                  borderRadius={"13px"}
-                  bgColor={"#222836"}
-                  fontSize={"small"}
+                  bottom={"15px"}
                   color={"white"}
-                  padding={"5px"}
+                  width={"80%"}
+                  justifyContent={"space-between"}
                 >
-                  <Text textAlign={"center"}>Expected Earnings</Text>
                   <Text
-                    flexDirection={"row"}
                     display={"flex"}
-                    gap={"8px"}
-                    paddingLeft={"5px"}
-                    paddingTop={"2px"}
-                    fontWeight={"600"}
+                    gap={"10px"}
+                    padding={"1.5"}
+                    paddingX={"2"}
+                    borderRadius={"13px"}
+                    bgColor={"#222836"}
                   >
-                    <Image src="/images/splash-token.svg" width={"5"} />{" "}
-                    {props.videoEarn}
+                    <Image src="/images/eye.svg" width={"5"} /> {props.views}
+                  </Text>
+                  <Text
+                    padding={"1.5"}
+                    borderRadius={"13px"}
+                    bgColor={"#222836"}
+                  >
+                    {props.time}
                   </Text>
                 </Box>
               )}
-              <>
-                {isMyprofileNFTpage ? (
-                  ""
-                ) : (
-                  <Box
-                    display={"flex"}
-                    flexDirection={"row"}
-                    position={"absolute"}
-                    bottom={"15px"}
-                    color={"white"}
-                    width={"80%"}
-                    justifyContent={"space-between"}
-                  >
-                    <Text
-                      display={"flex"}
-                      gap={"10px"}
-                      padding={"1.5"}
-                      paddingX={"2"}
-                      borderRadius={"13px"}
-                      bgColor={"#222836"}
-                    >
-                      <Image src="/images/eye.svg" width={"5"} /> {props.views}
-                    </Text>
-                    <Text
-                      padding={"1.5"}
-                      borderRadius={"13px"}
-                      bgColor={"#222836"}
-                    >
-                      {props.time}
-                    </Text>
-                  </Box>
-                )}
-              </>
-            </Box>
+            </>
+          </Box>
+          <Link href="/VideoDetail">
             <Box paddingX={"8"}>
               <Text
                 color={"white"}
@@ -120,8 +148,8 @@ export default function Video(props: any) {
                 </Box>
               </Flex>
             </Box>
-          </Box>
-        </Link>
+          </Link>
+        </Box>
       </Box>
     </Center>
   );

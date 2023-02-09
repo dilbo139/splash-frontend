@@ -1,8 +1,33 @@
 import { Box, Text, Image, Flex, Button, Link, Grid } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 import EarningStatics from "./EarningStatics";
 import Video from "./Video";
 
 const MyProfileNFTs: React.FC = () => {
+  const fetchPosts = async () => {
+    const response = await fetch("/api/videos", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    const post = await response.json();
+    // setPosts(post);
+    return post;
+  };
+
+  const { data, isError, isLoading, isSuccess } = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+  });
+
+  const { message: postData } = data || {};
+  console.log("postData:", postData);
   return (
     <Grid
       templateColumns={{ base: "repeat(1,1fr)", md: "repeat(3,1fr)" }}
@@ -10,18 +35,22 @@ const MyProfileNFTs: React.FC = () => {
       gap={"10"}
     >
       {/* NFT Videos List */}
-      <Video
-        videoImage="/images/video-list-bg4.svg"
-        videoEarn="25"
-        videoTitle="The Art History of NFTs"
-        videoAvatar="https://bit.ly/dan-abramov"
-        avatarName="NFT Nerd"
-        views="1.2M"
-        time="13:34"
-        uploadDate="1 week"
-        NFTs="13"
-      />
-      <Video
+      {postData?.map((post: any) => (
+        <Video
+          videoImage="/images/video-list-bg4.svg"
+          videoEarn="25"
+          videoTitle="The Art History of NFTs"
+          videoAvatar="https://bit.ly/dan-abramov"
+          avatarName="NFT Nerd"
+          views="1.2M"
+          time="13:34"
+          uploadDate="1 week"
+          NFTs="13"
+          videoIpfsUrl={post.videoIpfsUrl}
+        />
+      ))}
+
+      {/* <Video
         videoImage="/images/video-list-bg7.svg"
         videoEarn="24"
         videoTitle="Space-Based Blockchain: The Possibilities of Decentralized Systems in the Final Frontier"
@@ -64,7 +93,7 @@ const MyProfileNFTs: React.FC = () => {
         time="10:15"
         uploadDate="18 hours"
         NFTs="5"
-      />
+      /> */}
       <Video
         videoImage="/images/video-list-bg8.svg"
         videoEarn="10"
