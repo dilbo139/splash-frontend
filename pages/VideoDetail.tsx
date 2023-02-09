@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Flex,
   Heading,
@@ -11,9 +11,74 @@ import {
   Avatar,
   Input,
 } from "@chakra-ui/react";
-import Showcase from "components/Showcase";
+
+interface Props {
+  videoUrl: string;
+}
 
 const VideoDetail: React.FC = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [timeSpent, setTimeSpent] = useState(0);
+  const [moneyEarned, setMoneyEarned] = useState(0);
+  const rate = 0.1; // $0.01 per second of video watched
+
+  const [expectedEarnings, setExpectedEarnings] = useState(0);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!videoRef.current) {
+      return;
+    }
+
+    const video = videoRef.current;
+
+    video.onloadedmetadata = function () {
+      console.log(`Duration: ${video.duration} seconds`);
+    };
+  }, []);
+  useEffect(() => {
+    if (!videoRef.current) {
+      return;
+    }
+
+    const video = videoRef.current;
+
+    video.onloadedmetadata = function () {
+      const ratePerSecond = 0.1;
+      const duration = video.duration;
+
+      const earnings = duration * ratePerSecond;
+      setExpectedEarnings(earnings);
+    };
+  }, [videoRef.current]);
+
+  useEffect(() => {
+    let intervalId: any;
+    if (isPlaying) {
+      intervalId = setInterval(() => {
+        setTimeSpent(timeSpent + 1);
+        setMoneyEarned(timeSpent * rate);
+      }, 1000);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [isPlaying, timeSpent]);
+
+  const handlePlay = () => {
+    setIsPlaying(true);
+  };
+
+  const handlePause = () => {
+    setIsPlaying(false);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLVideoElement>) => {
+    if (event.key === " ") {
+      setIsPlaying(!isPlaying);
+    }
+  };
+
   return (
     <Container
       maxWidth={"80%"}
@@ -25,7 +90,7 @@ const VideoDetail: React.FC = () => {
     >
       <Flex flexDirection={"column"} color={"white"}>
         {/* Video Player */}
-        <Box
+        {/* <Box
           width={"1300px"}
           height={"700px"}
           display={"flex"}
@@ -33,7 +98,21 @@ const VideoDetail: React.FC = () => {
           bgSize="cover"
           bgPosition="center"
           bgRepeat="repeat"
-        ></Box>
+        ></Box> */}
+        <div>
+          <video
+            id="myVideo"
+            ref={videoRef}
+            src={
+              "https://lens.infura-ipfs.io/ipfs/QmXDzrC6BwVwTXoC6CmosEMC4DHSJstfYsAfbcjh4CdeCa/nowft-intro.mp4"
+              // "https://lens.infura-ipfs.io/ipfs/QmbCaUZz8TjvARetXFfaJdY6BL3aa9WVR33sV4FKECTgxB/SPLASH%20-%2010%20November%202022.mp4"
+            }
+            controls={true}
+            onClick={handlePlay}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+
         <Flex
           fontSize={"lg"}
           flexDirection={"row"}
@@ -93,7 +172,7 @@ const VideoDetail: React.FC = () => {
         <Flex
           flexDirection={{ base: "column", md: "row" }}
           justifyContent={"space-between"}
-          paddingY={"10"}
+          paddingY={"4"}
         >
           {/* Earning Box */}
           <Box
@@ -113,6 +192,41 @@ const VideoDetail: React.FC = () => {
                 gap={"10px"}
                 fontSize={"xl"}
               >
+                <Text color={"gray.400"}>Video Status</Text>
+                <Text
+                  flexDirection={"row"}
+                  display={"flex"}
+                  gap={"10px"}
+                  fontWeight={"500"}
+                  fontSize={"2xl"}
+                >
+                  {isPlaying ? "Playing" : "Paused"}
+                </Text>
+              </Box>
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                gap={"10px"}
+                fontSize={"xl"}
+              >
+                <Text color={"gray.400"}>Watching Time</Text>
+                <Text
+                  flexDirection={"row"}
+                  display={"flex"}
+                  gap={"10px"}
+                  fontWeight={"500"}
+                  fontSize={"2xl"}
+                >
+                  <Image src="/images/timer.png" width={"40px"} />
+                  {timeSpent}s
+                </Text>
+              </Box>
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                gap={"10px"}
+                fontSize={"xl"}
+              >
                 <Text color={"gray.400"}>Current Earnings</Text>
                 <Text
                   flexDirection={"row"}
@@ -121,8 +235,8 @@ const VideoDetail: React.FC = () => {
                   fontWeight={"500"}
                   fontSize={"2xl"}
                 >
-                  <Image src="/images/splash-token.svg" width={"5"} />
-                  11
+                  <Image src="/images/splash-token.svg" width={"7"} />
+                  {moneyEarned.toFixed(2)}
                 </Text>
               </Box>
               <Box
@@ -139,13 +253,13 @@ const VideoDetail: React.FC = () => {
                   fontWeight={"500"}
                   fontSize={"2xl"}
                 >
-                  <Image src="/images/splash-token.svg" width={"5"} />
-                  24
+                  <Image src="/images/splash-token.svg" width={"7"} />
+                  {expectedEarnings.toFixed(6)}
                 </Text>
               </Box>
             </Flex>
           </Box>
-          {/* NFT Box */}
+          {/* NFT Box  - future feature*/}
           {/* <Box
             background="linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%)"
             borderRadius={"12px"}
