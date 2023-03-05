@@ -126,9 +126,9 @@ export function useCreatePost(): any {
       },
     });
 
-    const result = await tx.wait();
-    console.log("tx from useCreatePost: ", tx);
-    console.log("result from useCreatePost: ", result);
+    // const result = await tx.wait();
+    // console.log("tx from useCreatePost: ", tx);
+    // console.log("result from useCreatePost: ", result);
     // const splitContentURI = contentURI.split("ipfs://");
     // const CID = splitContentURI[1];
     // console.log("CID: ", CID);
