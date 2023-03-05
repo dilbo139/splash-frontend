@@ -114,7 +114,7 @@ export default function Navbar() {
           >
             Connect Wallet
           </Button> */}
-          {address && (
+          {address ? (
             <Button
               bgColor="brand.purple"
               textColor="white"
@@ -125,15 +125,9 @@ export default function Navbar() {
             >
               Disconnect Wallet
             </Button>
-          )}
-
-          {!address ? (
-            <ConnectWallet accentColor="#7554FA" />
-          ) : isSignedInQuery.isLoading ? (
-            <div>Loading...</div>
-          ) : !isSignedInQuery.data ? (
+          ) : (
             <Button
-              onClick={() => requestLogin()}
+              onClick={() => console.log("sign in with magic...")}
               display={{ base: "end", md: "inline-flex" }}
               fontSize={"sm"}
               fontWeight={600}
@@ -143,8 +137,30 @@ export default function Navbar() {
                 bg: "pink.300",
               }}
             >
-              Sign in with Lens
+              Sign in Email (Magic)
             </Button>
+          )}
+
+          {!address ? (
+            <ConnectWallet accentColor="#7554FA" />
+          ) : isSignedInQuery.isLoading ? (
+            <div>Loading...</div>
+          ) : !isSignedInQuery.data ? (
+            <>
+              <Button
+                onClick={() => requestLogin()}
+                display={{ base: "end", md: "inline-flex" }}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"brand.purple"}
+                _hover={{
+                  bg: "pink.300",
+                }}
+              >
+                Sign in with Lens
+              </Button>
+            </>
           ) : profileQuery.isLoading ? (
             <div>Loading...</div>
           ) : !profileQuery.data?.defaultProfile ? (
