@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Flex,
   Text,
@@ -11,11 +11,90 @@ import {
   Input,
   Collapse,
   Textarea,
+  VisuallyHiddenInput,
+  VisuallyHidden,
 } from "@chakra-ui/react";
+
+import useLensUser from "@/lib/auth/useLensUser";
+import { useMutation } from "@tanstack/react-query";
+import { useAddress, useStorageUpload, Web3Button } from "@thirdweb-dev/react";
+import { LENS_CONTRACT_ABI, LENS_CONTRACT_ADDRESS } from "@/const/contracts";
+import { useCreatePost } from "@/lib/useCreatePost";
 
 const UploadForm: React.FC = () => {
   const [show, setShow] = React.useState(false);
   const handleToggle = () => setShow(!show);
+  const [video, setVideo] = useState<File | null>(null);
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const { isSignedInQuery, profileQuery } = useLensUser();
+  const [loading, setLoading] = useState(false);
+  const { mutateAsync: uploadToIpfs } = useStorageUpload();
+  const { mutateAsync: createPost } = useCreatePost();
+
+  const address = useAddress();
+
+  const handlePost = async (e: any) => {
+    e.preventDefault();
+
+    setLoading(true);
+
+    // reset error and message
+    setError("");
+    setMessage("");
+
+    // fields check
+    if (!title || !description) return setError("All fields are required");
+    try {
+      // upload video to IPFS
+      const videoIpfsUrl = (await uploadToIpfs({ data: [video] }))[0];
+
+      // post structure
+      let post = {
+        title,
+        description,
+        content,
+        author: profileQuery?.data?.defaultProfile?.handle || address,
+        published: false,
+        createdAt: new Date().toISOString(),
+        videoIpfsUrl,
+      };
+      // save the post
+      let response = await fetch("/api/videos", {
+        method: "POST",
+        body: JSON.stringify(post),
+      });
+
+      // get the data
+      let data = await response.json();
+      setLoading(false);
+
+      setTitle("");
+      setContent("");
+      setDescription("");
+      // set the message
+      return setMessage(data.message);
+    } catch (err: any) {
+      // set the error
+      return setError(err);
+    }
+  };
+
+  const {
+    data,
+    error: postError,
+    isError,
+    isLoading,
+    isSuccess,
+  } = useMutation({
+    mutationFn: handlePost,
+    onSuccess: async () => {
+      console.log("sucessfully mutated posts...");
+    },
+  });
 
   return (
     <>
@@ -67,9 +146,29 @@ const UploadForm: React.FC = () => {
               borderColor={"rgba(117, 84, 250, 0.5)"}
             >
               <Image src="/images/upload-video.svg" />
+
+              <Input
+                id="upload"
+                type="file"
+                placeholder="Upload a video"
+                accept="video/mp4,video/x-m4v,video/*"
+                onChange={(e) => {
+                  if (e.target.files) {
+                    setVideo(e.target.files[0]);
+                  }
+                }}
+                border="none"
+                size={"md"}
+                opacity={0}
+                width={"200px"}
+                height={"400px"}
+                p={6}
+                cursor={"pointer"}
+              />
               <Text fontWeight={"500"} fontSize={"xl"}>
                 Drag & Drop
               </Text>
+              {video && <Text color={"white"}>{video.name}</Text>}
             </Box>
             <Box
               width={{ base: "100%", md: "45%" }}
@@ -84,6 +183,8 @@ const UploadForm: React.FC = () => {
               <Input
                 placeholder="Add a title that describes your video"
                 borderRadius={"13px"}
+                onChange={(e) => setTitle(e.target.value)}
+                value={title}
               />
               <Text fontSize={"xl"} fontWeight={"500"}>
                 {" "}
@@ -94,64 +195,94 @@ const UploadForm: React.FC = () => {
                 fontSize={"lg"}
                 placeholder="Tell viewers about your video"
                 size="sm"
+                onChange={(e) => setDescription(e.target.value)}
+                value={description}
               />
             </Box>
           </Flex>
           {/* stake box */}
-          <Box
-            display={"flex"}
-            flexDirection={"column"}
-            bgColor={"#252A41"}
-            width={{ base: "100%", md: "100%" }}
-            justifyContent={"center"}
-            paddingX={{ base: "10", md: "10" }}
-            paddingY={{ base: "5", md: "10" }}
-            marginY={"10"}
-            borderRadius={"13px"}
-            mt={{ base: "10" }}
-          >
-            <Text fontWeight={"500"} fontSize={"x-large"} paddingBottom={"2"}>
-              Stake
-            </Text>
-            <Flex gap={"10"} flexDirection={{ base: "column", md: "row" }}>
-              <Box
-                fontWeight={"500"}
-                fontSize={{ base: "lg" }}
-                width={{ base: "unset", md: "63%" }}
-              >
-                Staking is required to upload a video to ensure compliance with
-                community guidelines.
-              </Box>
-              <Box
-                display={"flex"}
-                flexDirection={{ base: "row", md: "column" }}
-                gap={{ base: "10", md: "5" }}
-              >
-                <Box fontWeight={"500"} fontSize={{ base: "2xl", md: "xl" }}>
-                  Amount
-                </Box>
-                <Flex gap={"5"}>
-                  <Image src="/images/splash-token.svg" width={"7"} />
-                  <Text fontWeight={"600"} fontSize={{ base: "2xl", md: "xl" }}>
-                    15
-                  </Text>
-                </Flex>
-              </Box>
-              <Box
-                display={"flex"}
-                alignItems={{ base: "center", md: "center" }}
-              >
-                <Button
-                  bg={"brand.purple"}
-                  borderRadius={"13px"}
-                  fontSize={"xl"}
-                  paddingY={"2"}
+          {/* <form onSubmit={handlePost}> */}
+          <form onSubmit={(e) => e.preventDefault()}>
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              bgColor={"#252A41"}
+              width={{ base: "100%", md: "100%" }}
+              justifyContent={"center"}
+              paddingX={{ base: "10", md: "10" }}
+              paddingY={{ base: "5", md: "10" }}
+              marginY={"10"}
+              borderRadius={"13px"}
+              mt={{ base: "10" }}
+            >
+              <Text fontWeight={"500"} fontSize={"x-large"} paddingBottom={"2"}>
+                Stake
+              </Text>
+              <Flex gap={"10"} flexDirection={{ base: "column", md: "row" }}>
+                <Box
+                  fontWeight={"500"}
+                  fontSize={{ base: "lg" }}
+                  width={{ base: "unset", md: "63%" }}
                 >
-                  Stake and Upload
-                </Button>
-              </Box>
-            </Flex>
-          </Box>
+                  Staking is required to upload a video to ensure compliance
+                  with community guidelines.
+                </Box>
+                <Box
+                  display={"flex"}
+                  flexDirection={{ base: "row", md: "column" }}
+                  gap={{ base: "10", md: "5" }}
+                >
+                  <Box fontWeight={"500"} fontSize={{ base: "2xl", md: "xl" }}>
+                    Amount
+                  </Box>
+                  <Flex gap={"5"}>
+                    <Image src="/images/splash-token.svg" width={"7"} />
+                    <Text
+                      fontWeight={"600"}
+                      fontSize={{ base: "2xl", md: "xl" }}
+                    >
+                      15
+                    </Text>
+                  </Flex>
+                </Box>
+                <Box
+                  display={"flex"}
+                  alignItems={{ base: "center", md: "center" }}
+                >
+                  {/* <Button
+                    bg={"brand.purple"}
+                    borderRadius={"13px"}
+                    fontSize={"xl"}
+                    paddingY={"2"}
+                    type="submit"
+                  >
+                    {loading ? "Loading..." : "Stake and Upload"}
+                  </Button> */}
+                  <Web3Button
+                    accentColor="#7554FA"
+                    contractAddress={LENS_CONTRACT_ADDRESS}
+                    contractAbi={LENS_CONTRACT_ABI}
+                    action={async () => {
+                      if (!video) return;
+
+                      return await createPost({
+                        video,
+                        title,
+                        description,
+                        content,
+                      });
+                    }}
+                  >
+                    Create Post
+                  </Web3Button>
+                  {error ? <Text color={"red"}>{error}</Text> : null}
+                  {message ? (
+                    <Text color={"brand.purple"}>{message}</Text>
+                  ) : null}
+                </Box>
+              </Flex>
+            </Box>
+          </form>
         </Collapse>
       </Box>
     </>
