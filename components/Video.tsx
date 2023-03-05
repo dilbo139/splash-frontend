@@ -1,4 +1,15 @@
-import { Box, Center, Text, Image, Flex, Avatar, Link } from "@chakra-ui/react";
+import { SmallAddIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Center,
+  Text,
+  Image,
+  Flex,
+  Avatar,
+  Link,
+  Stack,
+  HStack,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 export default function Video(props: any) {
@@ -15,94 +26,90 @@ export default function Video(props: any) {
         width={{ base: "400px", md: "420px" }}
         height={{ base: "370px", md: "400px" }}
       >
-        <Link href="/VideoDetail">
-          <Box flexDirection={"column"}>
-            <Box
-              justifyContent={"center"}
-              display={"flex"}
-              position={"relative"}
-            >
-              <Image
-                src={props.videoImage}
+        <Box flexDirection={"column"}>
+          <Box justifyContent={"center"} display={"flex"} position={"relative"}>
+            <Image
+              src={props.videoImage}
+              borderRadius={"13px"}
+              width={"90%"}
+              marginTop={"18px"}
+            />
+            {isMyprofileNFTpage ? (
+              <Box
+                position={"absolute"}
+                top={"28px"}
+                right={"35px"}
+                width={"80px"}
+                textAlign={"center"}
+                fontWeight={"500"}
+                paddingY={"1"}
                 borderRadius={"13px"}
-                width={"90%"}
-                marginTop={"18px"}
-              />
-              {isMyprofileNFTpage ? (
-                <Box
-                  position={"absolute"}
-                  top={"28px"}
-                  right={"35px"}
-                  width={"80px"}
-                  textAlign={"center"}
-                  fontWeight={"500"}
-                  paddingY={"1"}
-                  borderRadius={"13px"}
-                  bgColor={"brand.purple"}
+                bgColor={"brand.purple"}
+              >
+                NFT #{props.NFTs}
+              </Box>
+            ) : (
+              <Box
+                position={"absolute"}
+                top={"28px"}
+                right={"35px"}
+                width={"130px"}
+                borderRadius={"13px"}
+                bgColor={"#222836"}
+                fontSize={"small"}
+                color={"white"}
+                padding={"5px"}
+              >
+                <Text textAlign={"center"}>Expected Earnings</Text>
+                <Text
+                  flexDirection={"row"}
+                  display={"flex"}
+                  gap={"8px"}
+                  paddingLeft={"5px"}
+                  paddingTop={"2px"}
+                  fontWeight={"600"}
                 >
-                  NFT #{props.NFTs}
-                </Box>
+                  <Image src="/images/splash-token.svg" width={"5"} />{" "}
+                  {props.videoEarn}
+                </Text>
+              </Box>
+            )}
+            <>
+              {isMyprofileNFTpage ? (
+                ""
               ) : (
                 <Box
+                  display={"flex"}
+                  flexDirection={"row"}
                   position={"absolute"}
-                  top={"28px"}
-                  right={"35px"}
-                  width={"130px"}
-                  borderRadius={"13px"}
-                  bgColor={"#222836"}
-                  fontSize={"small"}
+                  bottom={"15px"}
                   color={"white"}
-                  padding={"5px"}
+                  width={"80%"}
+                  justifyContent={"space-between"}
                 >
-                  <Text textAlign={"center"}>Expected Earnings</Text>
                   <Text
-                    flexDirection={"row"}
                     display={"flex"}
-                    gap={"8px"}
-                    paddingLeft={"5px"}
-                    paddingTop={"2px"}
-                    fontWeight={"600"}
+                    gap={"10px"}
+                    padding={"1.5"}
+                    paddingX={"2"}
+                    borderRadius={"13px"}
+                    bgColor={"#222836"}
                   >
-                    <Image src="/images/splash-token.svg" width={"5"} />{" "}
-                    {props.videoEarn}
+                    <Image src="/images/eye.svg" width={"5"} /> {props.views}
+                  </Text>
+                  <Text
+                    padding={"1.5"}
+                    borderRadius={"13px"}
+                    bgColor={"#222836"}
+                  >
+                    {props.time}
                   </Text>
                 </Box>
               )}
-              <>
-                {isMyprofileNFTpage ? (
-                  ""
-                ) : (
-                  <Box
-                    display={"flex"}
-                    flexDirection={"row"}
-                    position={"absolute"}
-                    bottom={"15px"}
-                    color={"white"}
-                    width={"80%"}
-                    justifyContent={"space-between"}
-                  >
-                    <Text
-                      display={"flex"}
-                      gap={"10px"}
-                      padding={"1.5"}
-                      paddingX={"2"}
-                      borderRadius={"13px"}
-                      bgColor={"#222836"}
-                    >
-                      <Image src="/images/eye.svg" width={"5"} /> {props.views}
-                    </Text>
-                    <Text
-                      padding={"1.5"}
-                      borderRadius={"13px"}
-                      bgColor={"#222836"}
-                    >
-                      {props.time}
-                    </Text>
-                  </Box>
-                )}
-              </>
-            </Box>
-            <Box paddingX={"8"}>
+            </>
+          </Box>
+          <Box paddingX={"8"}>
+            <Link href="/VideoDetail">
               <Text
                 color={"white"}
                 paddingTop={"2.5"}
@@ -112,16 +119,27 @@ export default function Video(props: any) {
               >
                 {props.videoTitle}
               </Text>
-              <Flex paddingTop={"3"} gap={"5"}>
+            </Link>
+            <Flex paddingTop={"3"} gap={"5"} justify="space-between">
+              <Flex gap={3}>
                 <Avatar size={"md"} src={props.videoAvatar} />
                 <Box color={"white"} display={"flex"} flexDirection={"column"}>
                   <Text>{props.avatarName}</Text>
                   <Text>{props.uploadDate} ago</Text>
                 </Box>
               </Flex>
-            </Box>
+              {/* TODO: Add follow button here */}
+              <HStack
+                color="white"
+                onClick={() => console.log("clicked follow")}
+                _hover={{ cursor: "pointer", opacity: 0.7 }}
+              >
+                <Text>Follow</Text>
+                <SmallAddIcon />
+              </HStack>
+            </Flex>
           </Box>
-        </Link>
+        </Box>
       </Box>
     </Center>
   );
