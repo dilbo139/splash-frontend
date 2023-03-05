@@ -20,7 +20,7 @@ const VideoDetail: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeSpent, setTimeSpent] = useState(0);
   const [moneyEarned, setMoneyEarned] = useState(0);
-  const rate = 0.1; // $0.01 per second of video watched
+  const rate = 0.5; // $0.01 per second of video watched
 
   const [expectedEarnings, setExpectedEarnings] = useState(0);
 
@@ -59,7 +59,7 @@ const VideoDetail: React.FC = () => {
       intervalId = setInterval(() => {
         setTimeSpent(timeSpent + 1);
         setMoneyEarned(timeSpent * rate);
-      }, 1000);
+      }, 300);
     }
 
     return () => clearInterval(intervalId);
@@ -218,7 +218,7 @@ const VideoDetail: React.FC = () => {
                   fontSize={"2xl"}
                 >
                   <Image src="/images/timer.png" width={"40px"} />
-                  {timeSpent}s
+                  {timeSpent}ms
                 </Text>
               </Box>
               <Box
@@ -254,7 +254,8 @@ const VideoDetail: React.FC = () => {
                   fontSize={"2xl"}
                 >
                   <Image src="/images/splash-token.svg" width={"7"} />
-                  {expectedEarnings.toFixed(6)}
+                  {/* {expectedEarnings.toFixed(6)} */}
+                  60
                 </Text>
               </Box>
             </Flex>
