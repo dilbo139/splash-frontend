@@ -1,7 +1,7 @@
 import { Box, Center, Flex } from "@chakra-ui/react";
 import Video from "./Video";
 
-export default function RecomendedVideos() {
+export default function RecomendedVideos(props: any) {
   return (
     <Flex
       py="10"
@@ -10,17 +10,26 @@ export default function RecomendedVideos() {
       paddingTop={"30px"}
       gap={"10"}
     >
-      <Video
-        videoImage="/images/video-list-bg1.svg"
-        videoEarn="24"
-        videoTitle="Web3 Unlocked: Decoding the Mysteries of Decentralized Technology"
-        videoAvatar="/images/video-avatar-1.svg"
-        avatarName="Mastermind"
-        views="432K"
-        time="13:12"
-        uploadDate="3 days"
-      />
-      <Video
+      {props.publicationsData?.explorePublications?.items
+        .slice(0, 3)
+        .map((publication: any) => (
+          <Video
+            videoImage="/images/video-list-bg1.svg"
+            videoEarn="24"
+            videoTitle="Web3 Unlocked: Decoding the Mysteries of Decentralized Technology"
+            videoAvatar="/images/video-avatar-1.svg"
+            avatarName={
+              publication?.profile.name || publication?.profile.handle
+            }
+            views="432K"
+            time="13:12"
+            uploadDate="3 days"
+            profileId={publication?.profile.id}
+            isFollowedByMe={publication?.profile.isFollowedByMe}
+          />
+        ))}
+
+      {/* <Video
         videoImage="/images/video-list-bg2.svg"
         videoEarn="16"
         videoTitle="An Objective Look at the Pros and Cons of Decentralized Tech"
@@ -39,7 +48,7 @@ export default function RecomendedVideos() {
         views="76K"
         time="08:55"
         uploadDate="3 days"
-      />
+      /> */}
     </Flex>
   );
 }

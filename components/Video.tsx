@@ -1,4 +1,6 @@
-import { SmallAddIcon } from "@chakra-ui/icons";
+import { LENS_CONTRACT_ABI, LENS_CONTRACT_ADDRESS } from "@/const/contracts";
+import { useFollow } from "@/lib/useFollow";
+import { CheckIcon, SmallAddIcon } from "@chakra-ui/icons";
 import {
   Box,
   Center,
@@ -10,11 +12,13 @@ import {
   Stack,
   HStack,
 } from "@chakra-ui/react";
+import { Web3Button } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
 
 export default function Video(props: any) {
   const router = useRouter();
   const isMyprofileNFTpage = router.pathname === "/MyProfile";
+  const { mutateAsync: followUser } = useFollow();
 
   return (
     <Center py="20" paddingTop={"none"}>
@@ -129,14 +133,34 @@ export default function Video(props: any) {
                 </Box>
               </Flex>
               {/* TODO: Add follow button here */}
-              <HStack
-                color="white"
-                onClick={() => console.log("clicked follow")}
-                _hover={{ cursor: "pointer", opacity: 0.7 }}
+              <Web3Button
+                contractAddress={LENS_CONTRACT_ADDRESS}
+                contractAbi={LENS_CONTRACT_ABI}
+                action={async () => {
+                  if (!props.profileId) return;
+                  console.log("clicked follow");
+                  return await followUser(props.profileId);
+                }}
+                accentColor="transparent"
+                className="followBtn"
               >
-                <Text>Follow</Text>
-                <SmallAddIcon />
-              </HStack>
+                <HStack
+                  color="white"
+                  _hover={{ cursor: "pointer", opacity: 0.7 }}
+                >
+                  {props.isFollowedByMe ? (
+                    <>
+                      <Text>Following</Text>
+                      <CheckIcon />
+                    </>
+                  ) : (
+                    <>
+                      <Text>Follow</Text>
+                      <SmallAddIcon />
+                    </>
+                  )}
+                </HStack>
+              </Web3Button>
             </Flex>
           </Box>
         </Box>

@@ -1,8 +1,6 @@
 import { MongoClient, MongoClientOptions } from "mongodb";
 
-const MONGODB_URI =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://dilbo139:Splash123$@cluster0.i8rexsd.mongodb.net/?retryWrites=true&w=majority";
+const MONGODB_URI = process.env.MONGODB_URI || "";
 const MONGODB_DB = process.env.DB_NAME || "splash";
 
 console.log("MONGODB_URI: ", MONGODB_URI);

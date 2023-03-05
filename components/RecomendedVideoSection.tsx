@@ -44,7 +44,7 @@ export default function RecomendedVideoSection(props: any) {
         </Flex>
       </Flex>
       <Flex paddingTop={"none"}>
-        <RecomendedVideos />
+        <RecomendedVideos publicationsData={props.publicationsData} />
       </Flex>
     </Container>
   );

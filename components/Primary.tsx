@@ -14,8 +14,31 @@ import Leaderboard from "./Leaderboard";
 import RecomendedVideoSection from "./RecomendedVideoSection";
 import TrendingVideoSection from "./TrendingVideoSection";
 import PopularCreatorSection from "./PopularCreatorSection";
+import {
+  PublicationSortCriteria,
+  useExplorePublicationsQuery,
+} from "@/graphql/generated";
 
 const Primary: React.FC = () => {
+  const {
+    isLoading,
+    error,
+    data: publicationsData,
+  } = useExplorePublicationsQuery(
+    {
+      request: {
+        sortCriteria: PublicationSortCriteria.Latest,
+      },
+    },
+    {
+      // Don't refetch the user comes back
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }
+  );
+
+  console.log("publicationsData: ", publicationsData);
+
   return (
     <Container
       centerContent
@@ -28,7 +51,10 @@ const Primary: React.FC = () => {
     >
       <Showcase />
       <Leaderboard />
-      <RecomendedVideoSection mainTitle="Recommended Videos" />
+      <RecomendedVideoSection
+        mainTitle="Recommended Videos"
+        publicationsData={publicationsData}
+      />
       <TrendingVideoSection mainTitle="Trending Videos" />
       <PopularCreatorSection mainTitle="Popular Creator" />
     </Container>

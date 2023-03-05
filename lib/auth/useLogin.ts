@@ -1,3 +1,4 @@
+import { STORAGE_KEY } from "@/const/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAddress, useSDK } from "@thirdweb-dev/react";
 import { useAuthenticateMutation } from "../../graphql/generated";
@@ -36,7 +37,7 @@ export default function useLogin() {
 
     // Now, let's ask react query to refetch the cache key
     // Refetch this cache key:  ["lens-user", address],
-    client.invalidateQueries(["lens-user", address]);
+    client.invalidateQueries([STORAGE_KEY, address]);
   }
 
   // 2. Return the useMutation hook wrapping the async function
