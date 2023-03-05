@@ -87,7 +87,7 @@ export function useCreatePost(): any {
       sdk,
       domain,
       types,
-      value,
+      value
     );
 
     const { v, r, s } = splitSignature(signature.signature);
@@ -95,7 +95,7 @@ export function useCreatePost(): any {
     // 3. Use the signed typed data to send the transaction to the smart contract
     const lensHubContract = await sdk.getContractFromAbi(
       LENS_CONTRACT_ADDRESS,
-      LENS_CONTRACT_ABI,
+      LENS_CONTRACT_ABI
     );
 
     // Destructure the stuff we need out of the typedData.value field
@@ -126,13 +126,13 @@ export function useCreatePost(): any {
       },
     });
 
-    // const result = await tx.wait();
-    // console.log("tx from useCreatePost: ", tx);
-    // console.log("result from useCreatePost: ", result);
-    const splitContentURI = contentURI.split("ipfs://");
-    const CID = splitContentURI[1];
-    console.log("CID: ", CID);
-    return `https://ipfs.io/ipfs/${CID}`;
+    const result = await tx.wait();
+    console.log("tx from useCreatePost: ", tx);
+    console.log("result from useCreatePost: ", result);
+    // const splitContentURI = contentURI.split("ipfs://");
+    // const CID = splitContentURI[1];
+    // console.log("CID: ", CID);
+    // return `https://ipfs.io/ipfs/${CID}`;
   }
 
   return useMutation(createPost);
