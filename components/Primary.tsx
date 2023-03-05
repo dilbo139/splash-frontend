@@ -29,7 +29,7 @@ const Primary: React.FC = () => {
       <Showcase />
       <Leaderboard />
       <RecomendedVideoSection mainTitle="Recommended Videos" />
-      <TrendingVideoSection mainTitle="Treanding Videos" />
+      <TrendingVideoSection mainTitle="Trending Videos" />
       <PopularCreatorSection mainTitle="Popular Creator" />
     </Container>
   );
