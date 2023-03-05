@@ -14,11 +14,13 @@ import {
 } from "@chakra-ui/react";
 import { Web3Button } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function Video(props: any) {
   const router = useRouter();
   const isMyprofileNFTpage = router.pathname === "/MyProfile";
   const { mutateAsync: followUser } = useFollow();
+  const [followed, setFollowed] = useState<boolean>(false);
 
   return (
     <Center py="20" paddingTop={"none"}>
@@ -139,7 +141,8 @@ export default function Video(props: any) {
                 action={async () => {
                   if (!props.profileId) return;
                   console.log("clicked follow");
-                  return await followUser(props.profileId);
+                  await followUser(props.profileId);
+                  setFollowed(true);
                 }}
                 accentColor="transparent"
                 className="followBtn"
@@ -148,7 +151,7 @@ export default function Video(props: any) {
                   color="white"
                   _hover={{ cursor: "pointer", opacity: 0.7 }}
                 >
-                  {props.isFollowedByMe ? (
+                  {followed || props.isFollowedByMe ? (
                     <>
                       <Text>Following</Text>
                       <CheckIcon />
