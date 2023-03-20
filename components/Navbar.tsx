@@ -114,32 +114,6 @@ export default function Navbar() {
           >
             Connect Wallet
           </Button> */}
-          {address ? (
-            <Button
-              bgColor="brand.purple"
-              textColor="white"
-              onClick={disconnect}
-              _hover={{
-                opacity: 0.8,
-              }}
-            >
-              Disconnect Wallet
-            </Button>
-          ) : (
-            <Button
-              onClick={() => console.log("sign in with magic...")}
-              display={{ base: "end", md: "inline-flex" }}
-              fontSize={"sm"}
-              fontWeight={600}
-              color={"white"}
-              bg={"brand.purple"}
-              _hover={{
-                bg: "pink.300",
-              }}
-            >
-              Sign in Email (Magic)
-            </Button>
-          )}
 
           {!address ? (
             <ConnectWallet accentColor="#7554FA" />
