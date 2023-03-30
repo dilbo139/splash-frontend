@@ -33,8 +33,9 @@ import {
   useDisconnect,
 } from "@thirdweb-dev/react";
 import React from "react";
-import useLensUser from "../lib/auth/useLensUser";
-import useLogin from "../lib/auth/useLogin";
+import useLensUser from "@/lib/auth/useLensUser";
+import useLogin from "@/lib/auth/useLogin";
+import { useMagicUser } from "@/lib/useMagicUser";
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
@@ -44,6 +45,8 @@ export default function Navbar() {
   const { isSignedInQuery, profileQuery } = useLensUser();
   const { mutate: requestLogin } = useLogin();
   const disconnect = useDisconnect();
+
+  const { connectWithMagic, accounts } = useMagicUser();
 
   return (
     <Box>
@@ -114,7 +117,7 @@ export default function Navbar() {
           >
             Connect Wallet
           </Button> */}
-          {address ? (
+          {address && (
             <Button
               bgColor="brand.purple"
               textColor="white"
@@ -125,9 +128,13 @@ export default function Navbar() {
             >
               Disconnect Wallet
             </Button>
-          ) : (
+          )}
+
+          {!address && !accounts ? (
             <Button
-              onClick={() => console.log("sign in with magic...")}
+              onClick={async () => {
+                await connectWithMagic();
+              }}
               display={{ base: "end", md: "inline-flex" }}
               fontSize={"sm"}
               fontWeight={600}
@@ -139,6 +146,8 @@ export default function Navbar() {
             >
               Sign in Email (Magic)
             </Button>
+          ) : (
+            <p>Account: {accounts[0]}</p>
           )}
 
           {!address ? (
