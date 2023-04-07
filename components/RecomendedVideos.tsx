@@ -12,7 +12,7 @@ export default function RecomendedVideos(props: any) {
     >
       {props.publicationsData?.explorePublications?.items
         .slice(0, 3)
-        .map((publication: any) => (
+        .map((publication: any, index: number) => (
           <Video
             videoImage="/images/video-list-bg1.svg"
             videoEarn="24"
@@ -26,6 +26,7 @@ export default function RecomendedVideos(props: any) {
             uploadDate="3 days"
             profileId={publication?.profile.id}
             isFollowedByMe={publication?.profile.isFollowedByMe}
+            key={index}
           />
         ))}
 

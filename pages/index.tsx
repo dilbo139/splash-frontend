@@ -1,6 +1,7 @@
 import { Text, Box } from "@chakra-ui/react";
 import Primary from "@components/Primary";
 import Footer from "@components/Footer";
+
 // import Test from "@components/test";
 
 export default function Home() {

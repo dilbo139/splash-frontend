@@ -36,6 +36,8 @@ import React from "react";
 import useLensUser from "@/lib/auth/useLensUser";
 import useLogin from "@/lib/auth/useLogin";
 import { useMagicUser } from "@/lib/useMagicUser";
+import SignInModal from "./SignInModal";
+import SignInMenu from "./SignInMenu";
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
@@ -105,18 +107,34 @@ export default function Navbar() {
           spacing={6}
           align={"center"}
         >
-          {/* <Button
-            display={{ base: "end", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"brand.purple"}
-            _hover={{
-              bg: "pink.300",
-            }}
-          >
-            Connect Wallet
-          </Button> */}
+          {/* Display current user's address */}
+          {accounts.length && (
+            <Text>
+              {accounts[0].slice(0, 3)}...{accounts[0].slice(-3)}
+            </Text>
+          )}
+          {address && (
+            <Text>
+              {address.slice(0, 3)}...{address.slice(-3)}
+            </Text>
+          )}
+
+          {!isSignedInQuery.data && (
+            <Button
+              onClick={() => requestLogin()}
+              display={{ base: "end", md: "inline-flex" }}
+              fontSize={"sm"}
+              fontWeight={600}
+              color={"white"}
+              bg={"brand.purple"}
+              _hover={{
+                bg: "pink.300",
+              }}
+            >
+              Sign in with Lens
+            </Button>
+          )}
+
           {address && (
             <Button
               bgColor="brand.purple"
@@ -129,56 +147,9 @@ export default function Navbar() {
               Disconnect Wallet
             </Button>
           )}
-
-          {!address && !accounts ? (
-            <Button
-              onClick={async () => {
-                await connectWithMagic();
-              }}
-              display={{ base: "end", md: "inline-flex" }}
-              fontSize={"sm"}
-              fontWeight={600}
-              color={"white"}
-              bg={"brand.purple"}
-              _hover={{
-                bg: "pink.300",
-              }}
-            >
-              Sign in Email (Magic)
-            </Button>
-          ) : (
-            <p>Account: {accounts[0]}</p>
-          )}
-
-          {!address ? (
-            <ConnectWallet accentColor="#7554FA" />
-          ) : isSignedInQuery.isLoading ? (
-            <div>Loading...</div>
-          ) : !isSignedInQuery.data ? (
-            <>
-              <Button
-                onClick={() => requestLogin()}
-                display={{ base: "end", md: "inline-flex" }}
-                fontSize={"sm"}
-                fontWeight={600}
-                color={"white"}
-                bg={"brand.purple"}
-                _hover={{
-                  bg: "pink.300",
-                }}
-              >
-                Sign in with Lens
-              </Button>
-            </>
-          ) : profileQuery.isLoading ? (
-            <div>Loading...</div>
-          ) : !profileQuery.data?.defaultProfile ? (
-            <div>No Lens Profile.</div>
-          ) : profileQuery.data?.defaultProfile ? (
-            <Text>{profileQuery.data.defaultProfile.handle}</Text>
-          ) : (
-            <div>Something went wrong.</div>
-          )}
+          {/* TODO: Add magic logout button here */}
+          {/* <SignInModal /> */}
+          <SignInMenu />
         </Stack>
       </Flex>
 
@@ -225,8 +196,8 @@ const DesktopNav = () => {
 
   return (
     <Stack direction={"column"} spacing={6} height={"full"}>
-      {NAV_ITEMS.map((navItem) => (
-        <Box key={navItem.label}>
+      {NAV_ITEMS.map((navItem: NavItem, idx: number) => (
+        <Box key={idx}>
           <Popover trigger={"hover"} placement={"bottom-start"}>
             <PopoverTrigger>
               <Link
@@ -270,8 +241,8 @@ const DesktopNav = () => {
 const MobileNav = () => {
   return (
     <Stack bg={"white"} p={4} display={{ md: "none" }} marginTop={"76px"}>
-      {NAV_ITEMS.map((navItem) => (
-        <MobileNavItem key={navItem.label} {...navItem} />
+      {NAV_ITEMS.map((navItem: NavItem, idx) => (
+        <MobileNavItem key={idx} {...navItem} />
       ))}
     </Stack>
   );
