@@ -36,6 +36,7 @@ import React from "react";
 import useLensUser from "@/lib/auth/useLensUser";
 import useLogin from "@/lib/auth/useLogin";
 import { useMagicUser } from "@/lib/useMagicUser";
+import SignInModal from "./SignInModal";
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
@@ -130,7 +131,9 @@ export default function Navbar() {
             </Button>
           )}
 
-          {!address && !accounts ? (
+          {/* TODO: Add magic logout button here */}
+
+          {/* {!address && !accounts ? (
             <Button
               onClick={async () => {
                 await connectWithMagic();
@@ -148,10 +151,12 @@ export default function Navbar() {
             </Button>
           ) : (
             <p>Account: {accounts[0]}</p>
-          )}
+          )} */}
 
           {!address ? (
-            <ConnectWallet accentColor="#7554FA" />
+            // TODO: Replace with SignInModal
+            // <ConnectWallet accentColor="#7554FA" />
+            <SignInModal />
           ) : isSignedInQuery.isLoading ? (
             <div>Loading...</div>
           ) : !isSignedInQuery.data ? (
