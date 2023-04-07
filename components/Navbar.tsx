@@ -113,13 +113,14 @@ export default function Navbar() {
               {accounts[0].slice(0, 3)}...{accounts[0].slice(-3)}
             </Text>
           )}
-          {address && (
-            <Text>
-              {address.slice(0, 3)}...{address.slice(-3)}
-            </Text>
+          {address && isSignedInQuery.data && (
+            <>
+              <Text>
+                {address.slice(0, 3)}...{address.slice(-3)}
+              </Text>
+            </>
           )}
-
-          {!isSignedInQuery.data && (
+          {address && !isSignedInQuery.data && (
             <Button
               onClick={() => requestLogin()}
               display={{ base: "end", md: "inline-flex" }}
@@ -133,6 +134,20 @@ export default function Navbar() {
             >
               Sign in with Lens
             </Button>
+          )}
+
+          {!profileQuery?.data?.defaultProfile && isSignedInQuery.data && (
+            <>
+              <Text color={"brand.purple"}>No Lens Profile.</Text>
+            </>
+          )}
+
+          {profileQuery?.data?.defaultProfile && (
+            <>
+              <Text color={"brand.purple"}>
+                {profileQuery?.data?.defaultProfile?.handle}
+              </Text>
+            </>
           )}
 
           {address && (

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { useAddress } from "@thirdweb-dev/react";
 import { readAccessToken } from "./helpers";
 import { useDefaultProfileQuery } from "../../graphql/generated";
@@ -8,7 +8,14 @@ export default function useLensUser() {
   // 1. Make a react query for the local storage Key
   const address = useAddress();
 
-  const localStorageQuery = useQuery(
+  const localStorageQuery: UseQueryResult<
+    {
+      accessToken: string;
+      refreshToken: string;
+      exp: number;
+    } | null,
+    unknown
+  > = useQuery(
     [STORAGE_KEY, address],
     // Writing the actual function to check the local storage
     () => readAccessToken()
