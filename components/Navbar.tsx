@@ -153,10 +153,37 @@ export default function Navbar() {
             <p>Account: {accounts[0]}</p>
           )} */}
 
-          {!address ? (
+          {!address && accounts.length ? (
+            <Text>
+              Account:{accounts[0].slice(0, 3)}...{accounts[0].slice(-3)}
+            </Text>
+          ) : (
+            <Button
+              onClick={async () => {
+                await connectWithMagic();
+              }}
+              display={{ base: "end", md: "inline-flex" }}
+              fontSize={"sm"}
+              fontWeight={600}
+              color={"white"}
+              bg={"brand.purple"}
+              _hover={{
+                opacity: 0.8,
+              }}
+              width="full"
+            >
+              Sign In With Email
+            </Button>
+          )}
+
+          {!address && !accounts ? (
             // TODO: Replace with SignInModal
             // <ConnectWallet accentColor="#7554FA" />
             <SignInModal />
+          ) : !address && accounts.length ? (
+            <Text>
+              Account:{accounts[0].slice(0, 3)}...{accounts[0].slice(-3)}
+            </Text>
           ) : isSignedInQuery.isLoading ? (
             <div>Loading...</div>
           ) : !isSignedInQuery.data ? (
@@ -230,8 +257,8 @@ const DesktopNav = () => {
 
   return (
     <Stack direction={"column"} spacing={6} height={"full"}>
-      {NAV_ITEMS.map((navItem) => (
-        <Box key={navItem.label}>
+      {NAV_ITEMS.map((navItem: NavItem, idx: number) => (
+        <Box key={idx}>
           <Popover trigger={"hover"} placement={"bottom-start"}>
             <PopoverTrigger>
               <Link
@@ -275,8 +302,8 @@ const DesktopNav = () => {
 const MobileNav = () => {
   return (
     <Stack bg={"white"} p={4} display={{ md: "none" }} marginTop={"76px"}>
-      {NAV_ITEMS.map((navItem) => (
-        <MobileNavItem key={navItem.label} {...navItem} />
+      {NAV_ITEMS.map((navItem: NavItem, idx) => (
+        <MobileNavItem key={idx} {...navItem} />
       ))}
     </Stack>
   );

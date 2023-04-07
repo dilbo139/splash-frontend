@@ -94,15 +94,15 @@ const SignInModal: React.FC<SignInModalProps> = () => {
                   onClick={async () => {
                     await connectWithMagic();
                   }}
-                  //   display={{ base: "end", md: "inline-flex" }}
-                  //   fontSize={"sm"}
-                  //   fontWeight={600}
-                  //   color={"white"}
-                  //   bg={"brand.purple"}
-                  //   _hover={{
-                  //     opacity: 0.8,
-                  //   }}
-                  //   width="full"
+                  display={{ base: "end", md: "inline-flex" }}
+                  fontSize={"sm"}
+                  fontWeight={600}
+                  color={"white"}
+                  bg={"brand.purple"}
+                  _hover={{
+                    opacity: 0.8,
+                  }}
+                  width="full"
                 >
                   Sign In With Email
                 </Button>

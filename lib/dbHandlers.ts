@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
-import { connectToDatabase } from "./mongodb";
+import { connectToDatabase } from "./db";
 
 export async function getPosts(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -56,7 +56,7 @@ export async function updatePost(req: NextApiRequest, res: NextApiResponse) {
       {
         _id: new ObjectId(req.body),
       },
-      { $set: { published: true } },
+      { $set: { published: true } }
     );
 
     // return a message

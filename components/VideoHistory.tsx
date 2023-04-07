@@ -80,7 +80,7 @@ const VideoHistory: React.FC = (props: any) => {
             <Text
               color={"white"}
               paddingTop={"2.5"}
-              height={"20"}
+              // height={"20"}
               fontSize={{ base: "lg", md: "xl" }}
               fontWeight={"500"}
               overflow={"hidden"}

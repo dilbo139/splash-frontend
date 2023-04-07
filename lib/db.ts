@@ -1,9 +1,7 @@
 import { MongoClient, MongoClientOptions } from "mongodb";
 
 const MONGODB_URI = process.env.MONGODB_URI || "";
-const MONGODB_DB = process.env.DB_NAME || "splash";
-
-console.log("MONGODB_URI: ", MONGODB_URI);
+const MONGODB_DB = process.env.MONGODB_DB || "";
 
 // check the MongoDB URI
 if (!MONGODB_URI) {
