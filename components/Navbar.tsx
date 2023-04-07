@@ -136,11 +136,13 @@ export default function Navbar() {
             </Button>
           )}
 
-          {!profileQuery?.data?.defaultProfile && isSignedInQuery.data && (
-            <>
-              <Text color={"brand.purple"}>No Lens Profile.</Text>
-            </>
-          )}
+          {!profileQuery?.data?.defaultProfile &&
+            address &&
+            isSignedInQuery.data && (
+              <>
+                <Text color={"brand.purple"}>No Lens Profile.</Text>
+              </>
+            )}
 
           {profileQuery?.data?.defaultProfile && (
             <>
