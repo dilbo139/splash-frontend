@@ -1,3 +1,5 @@
+import useLensUser from "@/lib/auth/useLensUser";
+import useLogin from "@/lib/auth/useLogin";
 import { useMagicUser } from "@/lib/useMagicUser";
 import {
   Box,
@@ -21,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 import {
   ConnectWallet,
+  useAddress,
   useCoinbaseWallet,
   useMetamask,
   useWalletConnect,
@@ -35,26 +38,32 @@ const SignInModal: React.FC<SignInModalProps> = () => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
+  const { mutate: requestLogin } = useLogin();
   const { connectWithMagic, accounts } = useMagicUser();
   const connectWithMetamask = useMetamask();
   const connectWithCoinbaseWallet = useCoinbaseWallet();
   const connectWithWalletConnect = useWalletConnect();
+  const { isSignedInQuery, profileQuery } = useLensUser();
+  const address = useAddress();
 
   return (
     <>
-      <Button
-        onClick={onOpen}
-        display={{ base: "end", md: "inline-flex" }}
-        fontSize={"sm"}
-        fontWeight={600}
-        color={"white"}
-        bg={"brand.purple"}
-        _hover={{
-          opacity: 0.8,
-        }}
-      >
-        Sign In
-      </Button>
+      {!address && (
+        <Button
+          onClick={onOpen}
+          display={{ base: "end", md: "inline-flex" }}
+          fontSize={"sm"}
+          fontWeight={600}
+          color={"white"}
+          bg={"brand.purple"}
+          _hover={{
+            opacity: 0.8,
+          }}
+        >
+          Sign In
+        </Button>
+      )}
+
       {/* <Button ml={4} ref={finalRef}>
         I'll receive focus on close
       </Button> */}
@@ -93,6 +102,7 @@ const SignInModal: React.FC<SignInModalProps> = () => {
                 <Button
                   onClick={async () => {
                     await connectWithMagic();
+                    onClose();
                   }}
                   display={{ base: "end", md: "inline-flex" }}
                   fontSize={"sm"}
@@ -129,7 +139,10 @@ const SignInModal: React.FC<SignInModalProps> = () => {
                   _hover={{
                     opacity: 0.8,
                   }}
-                  onClick={() => connectWithMetamask()}
+                  onClick={async () => {
+                    await connectWithMetamask();
+                    onClose();
+                  }}
                   w="full"
                 >
                   <Image
@@ -151,7 +164,10 @@ const SignInModal: React.FC<SignInModalProps> = () => {
                   _hover={{
                     opacity: 0.8,
                   }}
-                  onClick={() => connectWithCoinbaseWallet()}
+                  onClick={async () => {
+                    await connectWithCoinbaseWallet();
+                    onClose();
+                  }}
                   w="full"
                 >
                   <Image
@@ -173,7 +189,10 @@ const SignInModal: React.FC<SignInModalProps> = () => {
                   _hover={{
                     opacity: 0.8,
                   }}
-                  onClick={() => connectWithWalletConnect()}
+                  onClick={async () => {
+                    await connectWithWalletConnect();
+                    onClose();
+                  }}
                   w="full"
                 >
                   <Image

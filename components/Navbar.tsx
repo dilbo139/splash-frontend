@@ -106,18 +106,34 @@ export default function Navbar() {
           spacing={6}
           align={"center"}
         >
-          {/* <Button
-            display={{ base: "end", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"brand.purple"}
-            _hover={{
-              bg: "pink.300",
-            }}
-          >
-            Connect Wallet
-          </Button> */}
+          {/* Display current user's address */}
+          {accounts.length && (
+            <Text>
+              {accounts[0].slice(0, 3)}...{accounts[0].slice(-3)}
+            </Text>
+          )}
+          {address && (
+            <Text>
+              {address.slice(0, 3)}...{address.slice(-3)}
+            </Text>
+          )}
+
+          {!isSignedInQuery.data && (
+            <Button
+              onClick={() => requestLogin()}
+              display={{ base: "end", md: "inline-flex" }}
+              fontSize={"sm"}
+              fontWeight={600}
+              color={"white"}
+              bg={"brand.purple"}
+              _hover={{
+                bg: "pink.300",
+              }}
+            >
+              Sign in with Lens
+            </Button>
+          )}
+
           {address && (
             <Button
               bgColor="brand.purple"
@@ -130,86 +146,14 @@ export default function Navbar() {
               Disconnect Wallet
             </Button>
           )}
-
           {/* TODO: Add magic logout button here */}
-
-          {/* {!address && !accounts ? (
-            <Button
-              onClick={async () => {
-                await connectWithMagic();
-              }}
-              display={{ base: "end", md: "inline-flex" }}
-              fontSize={"sm"}
-              fontWeight={600}
-              color={"white"}
-              bg={"brand.purple"}
-              _hover={{
-                bg: "pink.300",
-              }}
-            >
-              Sign in Email (Magic)
-            </Button>
-          ) : (
-            <p>Account: {accounts[0]}</p>
-          )} */}
-
-          {!address && accounts.length ? (
+          <SignInModal />
+          {!address && accounts.length && (
             <Text>
-              Account:{accounts[0].slice(0, 3)}...{accounts[0].slice(-3)}
+              Account:{accounts && accounts[0].slice(0, 3)}...
+              {accounts[0].slice(-3)}
+              {address && address.slice(0, 3)}...{address?.slice(-3)}
             </Text>
-          ) : (
-            <Button
-              onClick={async () => {
-                await connectWithMagic();
-              }}
-              display={{ base: "end", md: "inline-flex" }}
-              fontSize={"sm"}
-              fontWeight={600}
-              color={"white"}
-              bg={"brand.purple"}
-              _hover={{
-                opacity: 0.8,
-              }}
-              width="full"
-            >
-              Sign In With Email
-            </Button>
-          )}
-
-          {!address && !accounts ? (
-            // TODO: Replace with SignInModal
-            // <ConnectWallet accentColor="#7554FA" />
-            <SignInModal />
-          ) : !address && accounts.length ? (
-            <Text>
-              Account:{accounts[0].slice(0, 3)}...{accounts[0].slice(-3)}
-            </Text>
-          ) : isSignedInQuery.isLoading ? (
-            <div>Loading...</div>
-          ) : !isSignedInQuery.data ? (
-            <>
-              <Button
-                onClick={() => requestLogin()}
-                display={{ base: "end", md: "inline-flex" }}
-                fontSize={"sm"}
-                fontWeight={600}
-                color={"white"}
-                bg={"brand.purple"}
-                _hover={{
-                  bg: "pink.300",
-                }}
-              >
-                Sign in with Lens
-              </Button>
-            </>
-          ) : profileQuery.isLoading ? (
-            <div>Loading...</div>
-          ) : !profileQuery.data?.defaultProfile ? (
-            <div>No Lens Profile.</div>
-          ) : profileQuery.data?.defaultProfile ? (
-            <Text>{profileQuery.data.defaultProfile.handle}</Text>
-          ) : (
-            <div>Something went wrong.</div>
           )}
         </Stack>
       </Flex>
