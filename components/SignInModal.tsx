@@ -20,6 +20,8 @@ import {
   VStack,
   Flex,
   Image,
+  Menu,
+  MenuButton,
 } from "@chakra-ui/react";
 import {
   ConnectWallet,
@@ -47,9 +49,9 @@ const SignInModal: React.FC<SignInModalProps> = () => {
   const address = useAddress();
 
   return (
-    <>
+    <Menu>
       {!address && (
-        <Button
+        <MenuButton
           onClick={onOpen}
           display={{ base: "end", md: "inline-flex" }}
           fontSize={"sm"}
@@ -61,7 +63,7 @@ const SignInModal: React.FC<SignInModalProps> = () => {
           }}
         >
           Sign In
-        </Button>
+        </MenuButton>
       )}
 
       {/* <Button ml={4} ref={finalRef}>
@@ -213,7 +215,7 @@ const SignInModal: React.FC<SignInModalProps> = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </Menu>
   );
 };
 

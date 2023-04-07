@@ -37,6 +37,7 @@ import useLensUser from "@/lib/auth/useLensUser";
 import useLogin from "@/lib/auth/useLogin";
 import { useMagicUser } from "@/lib/useMagicUser";
 import SignInModal from "./SignInModal";
+import SignInMenu from "./SignInMenu";
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
@@ -147,14 +148,8 @@ export default function Navbar() {
             </Button>
           )}
           {/* TODO: Add magic logout button here */}
-          <SignInModal />
-          {!address && accounts.length && (
-            <Text>
-              Account:{accounts && accounts[0].slice(0, 3)}...
-              {accounts[0].slice(-3)}
-              {address && address.slice(0, 3)}...{address?.slice(-3)}
-            </Text>
-          )}
+          {/* <SignInModal /> */}
+          <SignInMenu />
         </Stack>
       </Flex>
 
